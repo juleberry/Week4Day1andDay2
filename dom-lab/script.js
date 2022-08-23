@@ -60,8 +60,8 @@ const topMenuLinks = document.querySelectorAll('#top-menu a');
 let showingSubMenu = false;
 
 // Task 5.2 -- delegated
-
-topMenuEl.addEventListener('click', (e) => {
+const delegatedTopMenuLinks = document.querySelectorAll('#top-menu a')
+const handleClick = (e) => {
   e.preventDefault();
   const target = e.target;
   if (target.tagName !== 'a') {
@@ -78,13 +78,59 @@ topMenuEl.addEventListener('click', (e) => {
   }
 
   // Task 5.4
-  topMenuLinks.forEach((target) => {
+  delegatedTopMenuLinks.forEach((target) => {
     target.classList.remove('active')
   })
 
   // Task 5.5
-  target.classList.add('active');
+  delegatedTopMenuLinks.addEventListener('click', handleClick) 
+    target.classList.add('active');
 
-  // Task 5.6
+  // Task 5.6 -- could not get to work so the submenu remains hidden
+  let str = 'subLinks'
+  if (topMenuLinks.textContent.includes(str)) {
+    showingSubMenu = true
+  } else {
+    showingSubMenu = false
+  }};
+
+  // Task 5.7 -- could not get to work
+  if (showingSubMenu === true) {
+    subMenuEl.style.top = '100%'
+  } else {
+    subMenuEl.style.top = '0'
+  }
+
+  // Task 5.8 -- 
+  let subLinksArr // need to create array from subLinks
+  const buildSubMenu = (subLinksArr) => {
+    showingSubMenu = false;
+    for (links of subLinksArr) {
+      const newSubLink = document.createElement('a');
+      newSubLink.setAttribute('href', subLinksArr.href);
+      newSubLink.textContent = subLinksArr.text;
+      subMenuEl.appendChild(newSubLink);
+    }
+  }
+
+  // Task 6.0
+  const delegatedSubMenuEl = document.querySelector('#sub-menu')
+  delegatedSubMenuEl.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    let target2 = evt.target;
+    if (target2.tagName !== 'a') return;
+    console.log(target2.textContent);
   
+  // Task 6.1
+  showingSubMenu = false
+  subMenuEl.style.top = '0'
 });
+
+// Task 6.2 -- not working, unsure why
+topMenuLinks.classList.remove('active')
+
+// Task 6.3 -- incomplete
+mainEl.innerHTML = '<h1></h1>' 
+
+// Task 6.4 -- incomplete
+//.innerHTML = '<h1>about</h1>'
