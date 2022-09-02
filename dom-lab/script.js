@@ -1,5 +1,5 @@
-// Task 3.0 and Task 5.0
-let menuLinks = [
+// Menu data structure (Task 5.0)
+var menuLinks = [
   {text: 'about', href: '/about'},
   {text: 'catalog', href: '#', subLinks: [
     {text: 'all', href: '/catalog/all'},
@@ -16,121 +16,126 @@ let menuLinks = [
     {text: 'sign out', href: '/account/signout'},
   ]},
 ];
+
 // Task 1.0
-const mainEl = document.querySelector('main');
-// console.log(mainEl)
+var mainEl = document.querySelector('main');
+
 // Task 1.1
 mainEl.style.backgroundColor = 'var(--main-bg)';
+
 // Task 1.2
-mainEl.innerHTML = "<h1>SEI Rocks!</h1>";
+mainEl.innerHTML = '<h1>SEI Rocks!</h1>';
+
 // Task 1.3
-mainEl.classList.add("flex-ctr");
+mainEl.classList.add('flex-ctr');
+
 // Task 2.0
-const topMenuEl = document.getElementById('top-menu');
+var topMenuEl = document.getElementById('top-menu');
+
 // Task 2.1
-topMenuEl.style.height = "100%";
+topMenuEl.style.height = '100%'
+
 // Task 2.2
 topMenuEl.style.backgroundColor = 'var(--top-menu-bg)';
+
 // Task 2.3
 topMenuEl.classList.add('flex-around');
-// console.log(topMenuEl)
+
+// Task 3.0
+// menuLinks data structure copied at the top
+
 // Task 3.1
-for (links of menuLinks) {
-  const newAnchor = document.createElement('a');
-  newAnchor.setAttribute('href', links.href);
-  newAnchor.textContent = links.text;
-  topMenuEl.appendChild(newAnchor);
-}
+menuLinks.forEach(function(link) {
+  var linkEl = document.createElement('a');
+  linkEl.setAttribute('href', link.href);
+  linkEl.textContent = link.text;
+  topMenuEl.appendChild(linkEl);
+});
 
 // Task 4.0
-const subMenuEl = document.querySelector('#sub-menu');
+var subMenuEl = document.getElementById('sub-menu');
+
 // Task 4.1
-subMenuEl.style.height = "100%"
+subMenuEl.style.height = '100%';
+
 // Task 4.2
-subMenuEl.style.backgroundColor = 'var(--sub-menu-bg)'
+subMenuEl.style.backgroundColor = 'var(--sub-menu-bg)';
+
 // Task 4.3
-subMenuEl.classList.add('flex-around')
+subMenuEl.classList.add('flex-around');
+
 // Task 4.4
-subMenuEl.style.position = 'absolute'
+subMenuEl.style.position = 'absolute';
+
 // Task 4.5
-subMenuEl.style.top = '0'
+subMenuEl.style.top = '0';
+
+// Task 5.0
+// menuLinks array updated at the top
 
 // Task 5.1
-const topMenuLinks = document.querySelectorAll('#top-menu a');
-let showingSubMenu = false;
+var topMenuLinks = document.querySelectorAll('#top-menu a');
+var showingSubMenu = false;
 
-// Task 5.2 -- delegated
-const delegatedTopMenuLinks = document.querySelectorAll('#top-menu a')
-const handleClick = (e) => {
-  e.preventDefault();
-  const target = e.target;
-  if (target.tagName !== 'a') {
-    // console.log(target.textContent);
-    return;
-    
-  }
-// Task 5.3
-  if (target.classList.contains('active')) {
-    target.classList.remove('active');
+// Task 5.2
+topMenuEl.addEventListener('click', function(evt) {
+  evt.preventDefault();
+  var link = evt.target;
+  if (link.tagName !== 'A') return;
+  console.log(link.textContent);
+  // Task 5.3
+  if (link.classList.contains('active')) {
+    link.classList.remove('active');
     showingSubMenu = false;
     subMenuEl.style.top = '0';
     return;
   }
-
   // Task 5.4
-  delegatedTopMenuLinks.forEach((target) => {
-    target.classList.remove('active')
-  })
-
+  topMenuLinks.forEach(function(link) {
+    link.classList.remove('active');
+  });
   // Task 5.5
-  delegatedTopMenuLinks.addEventListener('click', handleClick) 
-    target.classList.add('active');
-
-  // Task 5.6 -- could not get to work so the submenu remains hidden
-  let str = 'subLinks'
-  if (topMenuLinks.textContent.includes(str)) {
-    showingSubMenu = true
+  link.classList.add('active');
+  // Task 5.6
+  var linkData = menuLinks.find(function(linkObj) {
+    return linkObj.text === link.textContent;
+  });
+  showingSubMenu = 'subLinks' in linkData;
+  // Task 6.4
+  if (!showingSubMenu) mainEl.innerHTML = `<h1>${link.textContent}</h1>`;
+  // Task 5.7
+  if (showingSubMenu) {
+    buildSubMenu(linkData.subLinks);
+    subMenuEl.style.top = '100%';
   } else {
-    showingSubMenu = false
-  }};
-
-  // Task 5.7 -- could not get to work
-  if (showingSubMenu === true) {
-    subMenuEl.style.top = '100%'
-  } else {
-    subMenuEl.style.top = '0'
+    subMenuEl.style.top = '0';
   }
-
-  // Task 5.8 -- 
-  let subLinksArr // need to create array from subLinks
-  const buildSubMenu = (subLinksArr) => {
-    showingSubMenu = false;
-    for (links of subLinksArr) {
-      const newSubLink = document.createElement('a');
-      newSubLink.setAttribute('href', subLinksArr.href);
-      newSubLink.textContent = subLinksArr.text;
-      subMenuEl.appendChild(newSubLink);
-    }
-  }
-
-  // Task 6.0
-  const delegatedSubMenuEl = document.querySelector('#sub-menu')
-  delegatedSubMenuEl.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    let target2 = evt.target;
-    if (target2.tagName !== 'a') return;
-    console.log(target2.textContent);
-  
-  // Task 6.1
-  showingSubMenu = false
-  subMenuEl.style.top = '0'
 });
 
-// Task 6.2 -- not working, unsure why
-topMenuLinks.classList.remove('active')
+// Task 5.8
+function buildSubMenu(subLinks) {
+  subMenuEl.innerHTML = '';
+  subLinks.forEach(function(link) {
+    var linkEl = document.createElement('a');
+    linkEl.setAttribute('href', link.href);
+    linkEl.textContent = link.text;
+    subMenuEl.appendChild(linkEl);
+  });
+}
 
-// Task 6.3 -- incomplete
-mainEl.innerHTML = '<h1></h1>' 
-
-// Task 6.4 -- incomplete
-//.innerHTML = '<h1>about</h1>'
+// Task 6.0
+subMenuEl.addEventListener('click', function(evt) {
+  evt.preventDefault();
+  var link = evt.target;
+  if (link.tagName !== 'A') return;
+  console.log(link.textContent);
+  // Task 6.1
+  showingSubMenu = false;
+  subMenuEl.style.top = '0';
+  // Task 6.2
+  topMenuLinks.forEach(function(link) {
+    link.classList.remove('active');
+  });
+  // Task 6.3
+  mainEl.innerHTML = `<h1>${link.textContent}</h1>`;
+});
